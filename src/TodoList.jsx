@@ -1,25 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const TodoList = () => {
-    // Estado con todas las tareas
-    // Estado para almacenar el valor actual del input
+  const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('tasks')) || []);
+  const [newTask, setNewTask] = useState('');
 
-    // Funcion para añadir tarea al estado
-    // Estructura de una tarea { id: Date.now(), text: '', completed: false }
-    const addTask = () => {
-    };
+  // Cargar tareas desde el almacenamiento local al iniciar la aplicación
+  useEffect(() => {
+    const storedTasks = JSON.parse(localStorage.getItem('tasks'));
+    if (storedTasks) {
+      setTasks(storedTasks);
+    }
+  }, []);
 
-    // Funcion para eliminar tarea del estado
-    const handleDeleteTask = (taskId) => {
-    };
+  // Guardar tareas en el almacenamiento local cada vez que la lista de tareas cambie
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  const addTask = () => {
+    if (newTask.trim() !== '') {
+      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      setNewTask('');
+    }
+  };
+
+  const handleDeleteTask = (taskId) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
+  const handleToggleTask = (taskId) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
 
   return (
     <div>
       <h1>Lista de Tareas</h1>
       <input
         type="text"
-        value={}
-        onChange={}
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
         placeholder="Nueva tarea"
       />
       <button onClick={addTask}>Agregar tarea</button>
@@ -29,9 +50,7 @@ const TodoList = () => {
             <input
               type="checkbox"
               checked={task.completed}
-              onChange={() => {
-                // Actualizar el estado de la tarea como completada o no completada
-              }}
+              onChange={() => handleToggleTask(task.id)}
             />
             <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>{task.text}</span>
             <button onClick={() => handleDeleteTask(task.id)}>Eliminar</button>
