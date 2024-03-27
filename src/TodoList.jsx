@@ -1,37 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+// import { addItem, deleteItem, completedItem } from './store/actions/actions';
+import { addItem, deleteItem, completeItem } from './features/tasks/tasksSlice';
+
 
 const TodoList = () => {
-  const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('tasks')) || []);
+  const items = useSelector(state => state.tasks.items);
+  const dispatch = useDispatch();
   const [newTask, setNewTask] = useState('');
-
-  // Cargar tareas desde el almacenamiento local al iniciar la aplicación
-  useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem('tasks'));
-    if (storedTasks) {
-      setTasks(storedTasks);
-    }
-  }, []);
-
-  // Guardar tareas en el almacenamiento local cada vez que la lista de tareas cambie
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
 
   const addTask = () => {
     if (newTask.trim() !== '') {
-      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      dispatch(addItem({ id: Date.now(), text: newTask, completed: false }));
       setNewTask('');
     }
   };
 
   const handleDeleteTask = (taskId) => {
-    setTasks(tasks.filter(task => task.id !== taskId));
+    dispatch(deleteItem(taskId))
   };
 
   const handleToggleTask = (taskId) => {
-    setTasks(tasks.map(task =>
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    ));
+    dispatch(completeItem(taskId))
   };
 
   return (
@@ -45,7 +35,7 @@ const TodoList = () => {
       />
       <button onClick={addTask}>Agregar tarea</button>
       <ul>
-        {tasks.map(task => (
+        {items.map(task => (
           <li key={task.id}>
             <input
               type="checkbox"
