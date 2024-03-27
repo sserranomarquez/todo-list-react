@@ -1,21 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
+import TasksContext from './context/TasksContext';
 
 const TodoList = () => {
-  const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('tasks')) || []);
+  const {tasks, setTasks} = useContext(TasksContext);
   const [newTask, setNewTask] = useState('');
-
-  // Cargar tareas desde el almacenamiento local al iniciar la aplicación
-  useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem('tasks'));
-    if (storedTasks) {
-      setTasks(storedTasks);
-    }
-  }, []);
-
-  // Guardar tareas en el almacenamiento local cada vez que la lista de tareas cambie
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
 
   const addTask = () => {
     if (newTask.trim() !== '') {
