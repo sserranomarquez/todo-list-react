@@ -7,7 +7,7 @@ const TodoList = () => {
 
   const addTask = () => {
     if (newTask.trim() !== '') {
-      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      setTasks([...tasks, { id: parseInt(Math.floor(Math.random() * Date.now()).toString().slice(0, 5)), text: newTask, completed: false }]);
       setNewTask('');
     }
   };
@@ -40,7 +40,7 @@ const TodoList = () => {
               checked={task.completed}
               onChange={() => handleToggleTask(task.id)}
             />
-            <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>{task.text}</span>
+            <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>ID: {task.id} - Description: {task.text}</span>
             <button onClick={() => handleDeleteTask(task.id)}>Eliminar</button>
           </li>
         ))}
