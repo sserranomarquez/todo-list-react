@@ -1,14 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import TasksContext from './context/TasksContext';
-// import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const TaskById = () => {
     const { tasks } = useContext(TasksContext);
     const [task, setTask] = useState(null);
+    let { taskId } = useParams();
+    const navigate = useNavigate();
 
-    // Obtener del parametro el id de la tarea
-
-    // Verificar en el contexto si la tarea existe y guardarla en el estado task o si no redireccionar al usuario a una página de error.
+    useEffect(() => {
+        const taskObject = tasks.find(task => task.id == taskId);
+        if (taskObject != null) {
+            setTask(taskObject)
+        } else {
+            navigate('/404');
+        }
+    }, [])
 
     return (
         <div>
